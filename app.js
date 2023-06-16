@@ -9,6 +9,7 @@ const cartItems = document.querySelector('.cart-items');
 const cartTotal = document.querySelector('.cart-total');
 const cartContent = document.querySelector('.cart-content');
 const productsDOM = document.querySelector('.products-center');
+const filter = document.getElementById('filter')
 
 // cart
 let cart = [];
@@ -16,17 +17,25 @@ let cart = [];
 let buttonsDOM = [];
 //getting the products
 class Products {
-    async  getProducts() {
+    async  getProducts(price) {
         try {
             let result = await fetch ('products.json');
             let data = await result.json();
 
             let products = data.items;
+
             products = products.map(items=>{
                 const {title, price} = items.fields;
                 const {id} = items.sys;
                 const image = items.fields.image.fields.file.url;
                 return {title, price, id, image}
+            }).filter((product) => {
+                if(!price) {
+                    return true;
+                } else {
+                    return product?.price < price;
+                    // return product?.price < price;
+                }
             })
             return products;
         } catch (error) {
@@ -46,7 +55,7 @@ class UI {
                         <img src=${product.image} alt="product" class="product-img">
                         <button class="bag-btn" data-id=${product.id}>
                             <i class="fas fa-shopping-cart"></i>
-                            add to bag
+                            ${ 'add to bag'}
                         </button>
                     </div>
                     <h3>${product.title}</h3>
@@ -56,14 +65,20 @@ class UI {
             `  
         });
         productsDOM.innerHTML = result;
+
+        
+
     }
 
     getBagButtons(){
         const buttons = [...document.querySelectorAll('.bag-btn')];
         buttonsDOM = buttons
+        console.log('cart: ', cart)
         buttons.forEach((buttons) =>{
             let id = buttons.dataset.id;
-            let inCart = cart.find(items => items.id === id);
+            let inCart = cart.find(function (items) {
+                    return items.id === id;
+                });
             if (inCart) {
                 inCart.innerText = "in cart"
                 buttons.disableb = true
@@ -210,17 +225,26 @@ class Storage {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () =>{
+function createInterface (price) {
     const ui = new UI();
     const products = new Products();
     //setup app
     ui.setupAPP();
     //get all the product
-    products.getProducts().then(products =>{
+    products.getProducts(price).then(products =>{
         ui.displayProducts(products)
         Storage.saveProducts(products);
-    }).then( () => {
+    }).then(() => {
         ui.getBagButtons();
         ui.cartLogic();
     });
+}
+
+document.addEventListener('DOMContentLoaded', () =>{
+    createInterface();
 });
+
+document.getElementById('button_filter').onclick = () => {
+    console.log('test')
+    createInterface(parseFloat(filter.value));
+}

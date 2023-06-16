@@ -96,13 +96,41 @@ body {
 .products {
     padding: 4rem 0;
   }
-  .section-title h2 {
-    text-align: center;
+  .section-title {
+    display: grid;
+    align-items: center;
+    justify-content: center;
     font-size: 2.5rem;
     margin-bottom: 5rem;
     text-transform: capitalize;
     letter-spacing: var(--mainSpacing);
+
   }
+
+  .section-title button{
+    padding: 0.5rem 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: var(--mainSpacing);
+    font-size: 1.5rem;
+    background: var(--primaryColor);
+    color: var(--mainBlack);
+    border: 1px solid var(--primaryColor);
+    transition: var(--mainTransition);
+    cursor: pointer;
+  }
+
+  .section-title input{
+    border-color: var(--primaryColor);
+    background-color: transparent;
+    font-size: 2rem;
+    width: 56%;
+  }  
+  
+  .section-title button:hover {
+    background: transparent;
+    color: var(--primaryColor);
+  }
+
   .products-center {
     width: 90vw;
     margin: 0 auto;
@@ -261,3 +289,9 @@ body {
 }
 
 /* --------------- End of Cart ---------------- */
+
+.empty{
+  text-align: center;
+  font-size: 30px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
